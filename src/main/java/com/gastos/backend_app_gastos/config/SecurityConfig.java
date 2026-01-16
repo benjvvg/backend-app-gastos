@@ -28,9 +28,12 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authRequest ->authRequest
                 .requestMatchers("/auth/**").permitAll()
+                //Usuarios
                 .requestMatchers(HttpMethod.GET, "/api/v1/usuarios").hasAuthority("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/api/v1/usuarios/{id}").hasAuthority("ADMIN")
                 .requestMatchers("/api/v1/usuarios/**").authenticated()
+                //Categorias
+                .requestMatchers("/api/v1/categorias/**").authenticated()
                 .anyRequest().authenticated()
                 )
             .sessionManagement(sessionManager->
