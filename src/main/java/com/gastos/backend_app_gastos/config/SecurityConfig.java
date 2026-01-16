@@ -2,6 +2,7 @@ package com.gastos.backend_app_gastos.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,17 +25,17 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
     {
         return http
-            .csrf(csrf -> 
-                csrf
-                .disable())
-            .authorizeHttpRequests(authRequest ->
-              authRequest
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(authRequest ->authRequest
                 .requestMatchers("/auth/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/usuarios").hasAuthority("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/v1/usuarios/{id}").hasAuthority("ADMIN")
+                .requestMatchers("/api/v1/usuarios/**").authenticated()
                 .anyRequest().authenticated()
                 )
             .sessionManagement(sessionManager->
                 sessionManager 
-                  .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authProvider)
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
