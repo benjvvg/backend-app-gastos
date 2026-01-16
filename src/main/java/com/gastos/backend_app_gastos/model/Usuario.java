@@ -13,12 +13,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -31,31 +31,52 @@ import jakarta.persistence.UniqueConstraint;
 @Table(name="usuarios", uniqueConstraints = {@UniqueConstraint(columnNames = {"username"})})
 public class Usuario implements UserDetails{
     @Id
-    @GeneratedValue
-    Integer id;
-    @Basic
-    @Column(nullable = false)
-    String username;
-    @Column(nullable = false)
-    String apellido;
-    String nombre;
-    String pais;
-    String password;
-    @Enumerated(EnumType.STRING) 
-    Rol rol;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
+    @Column(nullable = false, unique = true)
+    private String username;
+
+    @Column(nullable = false, length = 30)
+    private String nombre;
+
+    @Column(nullable = false, length = 30)
+    private String apellido;
+
+    @Column(length = 30, nullable = false)
+    private String pais; 
+
+    @Column(nullable = false)
+    private String password;
+
+    @Enumerated(EnumType.STRING) 
+    private Rol rol;
+
+    @Column(columnDefinition = "boolean default true")
+    @Builder.Default
+    private boolean enabled = true;
+
+    private String googleId;
+    private String googleRefreshToken;
+
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority((rol.name())));
     }
+
+    @Override
     public boolean isAccountNonExpired() {
         return true;
     }
+    @Override
     public boolean isAccountNonLocked() {
         return true;
     }
+    @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
+    @Override
     public boolean isEnabled() {
         return true;
     }
