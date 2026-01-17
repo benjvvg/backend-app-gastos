@@ -34,6 +34,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/usuarios/**").authenticated()
                 //Categorias
                 .requestMatchers("/api/v1/categorias/**").authenticated()
+                //Transacciones
+                .requestMatchers("/api/v1/transacciones/**").authenticated()
                 .anyRequest().authenticated()
                 )
             .sessionManagement(sessionManager->
