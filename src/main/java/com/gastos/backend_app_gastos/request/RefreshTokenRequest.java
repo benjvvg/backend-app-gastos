@@ -1,14 +1,12 @@
-package com.gastos.backend_app_gastos.auth;
+package com.gastos.backend_app_gastos.request;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthResponse {
-    String token;
+public class RefreshTokenRequest {
+    private String refreshToken;
 }

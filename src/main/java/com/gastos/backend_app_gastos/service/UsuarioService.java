@@ -24,14 +24,14 @@ public class UsuarioService {
     }
 
     @Transactional(readOnly = true)
-    public Usuario findById(Integer id) {
+    public Usuario findById(Long id) {
         return usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + id));
     }
 
     @Transactional(readOnly = true)
     public Usuario findByUsername(String username) {
-        return usuarioRepository.findByUsername(username)
+        return usuarioRepository.findByEmail(username)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + username));
     }
 
@@ -42,7 +42,7 @@ public class UsuarioService {
     }
 
     @Transactional
-    public Usuario update(Integer id, Usuario usuarioDetails) {
+    public Usuario update(Long id, Usuario usuarioDetails) {
         Usuario usuarioExistente = findById(id);
 
         if (usuarioDetails.getNombre() != null && !usuarioDetails.getNombre().isEmpty()) {
@@ -65,7 +65,7 @@ public class UsuarioService {
     }
 
     @Transactional
-    public void deleteById(Integer id) {
+    public void deleteById(Long id) {
         Usuario usuario = findById(id);
         usuario.setEnabled(false);
         usuarioRepository.save(usuario);

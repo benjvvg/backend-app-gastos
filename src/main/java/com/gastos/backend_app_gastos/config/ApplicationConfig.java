@@ -1,15 +1,10 @@
 package com.gastos.backend_app_gastos.config;
 
 import org.springframework.security.authentication.AuthenticationManager;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import com.gastos.backend_app_gastos.repository.UsuarioRepository;
-
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -25,28 +20,26 @@ public class ApplicationConfig {
     private final UsuarioRepository usuarioRepository;
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception
-    {
-        return config.getAuthenticationManager();
+    public UserDetailsService userDetailsService() {
+        return username -> usuarioRepository.findByEmail(username)
+            .orElseThrow(()-> new UsernameNotFoundException("Usuario no encontrado"));
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider()
-    {
-        DaoAuthenticationProvider authenticationProvider= new DaoAuthenticationProvider();
-        authenticationProvider.setUserDetailsService(userDetailService());
-        authenticationProvider.setPasswordEncoder(passwordEncoder());
-        return authenticationProvider;
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService());
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) {
+        return config.getAuthenticationManager();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-    @Bean
-    public UserDetailsService userDetailService() {
-        return username -> usuarioRepository.findByUsername(username)
-        .orElseThrow(()-> new UsernameNotFoundException("User not fournd"));
-    }
+    
 }

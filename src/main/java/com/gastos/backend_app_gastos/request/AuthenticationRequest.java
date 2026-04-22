@@ -1,4 +1,4 @@
-package com.gastos.backend_app_gastos.auth;
+package com.gastos.backend_app_gastos.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginRequest {
-    String username;
-    String password; 
+public class AuthenticationRequest {
+    private String email;
+    private String password; 
 }

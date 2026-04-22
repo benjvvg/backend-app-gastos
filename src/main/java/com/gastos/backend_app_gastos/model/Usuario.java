@@ -2,40 +2,31 @@ package com.gastos.backend_app_gastos.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
+import com.gastos.backend_app_gastos.enums.Rol;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import java.util.Collection;
+
+import jakarta.persistence.*;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="usuarios", uniqueConstraints = {@UniqueConstraint(columnNames = {"username"})})
+@Table(name="usuarios")
 public class Usuario implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false, unique = true)
-    private String username;
+    private String email;
 
     @Column(nullable = false, length = 30)
     private String nombre;
@@ -56,12 +47,24 @@ public class Usuario implements UserDetails{
     @Builder.Default
     private boolean enabled = true;
 
+    //Columna futuras OAuth2.0
+    /* 
     private String googleId;
-    private String googleRefreshToken;
+    private String googleRefreshToken; */
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority((rol.name())));
+        return rol.getAuthorities();
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
     }
 
     @Override
